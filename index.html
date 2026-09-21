@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#f4f1e9">
+  <meta name="color-scheme" content="light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="YueWord">
+  <title>YueWord</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css?20260921224028">
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" data-view="book" aria-label="回到生词本"><img src="icons/icon-192.png" alt=""><span>YueWord</span></button>
+    <nav aria-label="主要功能">
+      <button class="nav-button active" data-view="book">生词本</button>
+      <button class="nav-button" data-view="study">背单词</button>
+      <button class="nav-button" data-view="hanzi">学汉字</button>
+      <button class="nav-button" data-view="math">数学</button>
+      <button class="nav-button" data-view="data">数据</button>
+    </nav>
+    <button id="profile-button" class="profile-pill"><i></i><span>选择用户</span><b>⌄</b></button>
+  </header>
+
+  <main>
+    <section id="view-book" class="view active">
+      <div id="book-home">
+        <div class="page-head"><div><p class="eyebrow">WORD GARDEN</p><h1>我的生词本</h1><p>每一个生词，都在这里慢慢变熟。</p></div><div id="book-count" class="count-stamp">0<br><small>WORDS</small></div></div>
+        <form id="add-form" class="add-card">
+          <label><span>英文单词</span><input id="word-input" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="例如 rabbit" required></label>
+          <label><span>中文释义</span><input id="meaning-input" autocomplete="off" placeholder="例如 兔子（可以稍后补充）"></label>
+          <button class="primary" type="submit">加入生词本</button>
+        </form>
+        <div id="wordbook-section">
+          <h2 class="m-section">单词本<small>老师要求的词，自动加进每个孩子的生词本</small></h2>
+          <div id="wordbook-grid" class="hz-book-grid"></div>
+        </div>
+        <div id="word-list" class="word-list"></div>
+      </div>
+      <div id="wordbook-detail" class="hidden"></div>
+    </section>
+
+    <section id="view-study" class="view">
+      <div id="mode-picker">
+        <div class="page-head"><div><p class="eyebrow">TODAY'S PRACTICE</p><h1>今天怎么背？</h1><p>两种模式，共用同一份学习记录。</p></div></div>
+        <div class="mode-grid">
+          <button id="start-sequence" class="mode-card sequence"><span class="mode-number">01</span><div><h2>顺序巩固</h2><p>按加入顺序出现，答错后定距重现，再次答对后间隔确认。</p><small id="sequence-resume">从第一个开始</small></div><b>→</b></button>
+          <button id="start-smart" class="mode-card smart"><span class="mode-number">✦</span><div><h2>智能复习</h2><p>根据掌握权重抽取，越不熟悉的词越容易再次出现。</p><small>随时开始</small></div><b>→</b></button>
+        </div>
+      </div>
+      <div id="study-session" class="hidden">
+        <div class="study-head"><button id="exit-study" class="text-button">‹ 学习模式</button><div id="sequence-meter"></div></div>
+        <article class="flashcard">
+          <div id="phase-label" class="phase hidden"></div>
+          <button id="speak-button" class="speaker" aria-label="播放美音">◖))</button>
+          <h2 id="study-word">—</h2>
+          <div id="study-meanings" class="meanings hidden"></div>
+          <div id="study-actions" class="study-actions"></div>
+        </article>
+        <div class="study-footer"><button id="undo-button" class="undo" disabled>↶ 上一个词</button><p id="study-progress"></p></div>
+      </div>
+      <div id="study-summary" class="summary hidden"><div class="seal">✓</div><p class="eyebrow">ROUND COMPLETE</p><h2>这一轮完成了</h2><p id="summary-text"></p><div class="summary-grid"><div><b id="summary-mastered">0</b><span>本轮掌握</span></div><div><b id="summary-focus">0</b><span>重点复习</span></div></div><button id="summary-done" class="primary">完成</button></div>
+    </section>
+
+    <section id="view-hanzi" class="view">
+      <div id="hanzi-home"></div>
+      <div id="hanzi-book" class="hidden"></div>
+      <div id="hanzi-screen" class="hidden"></div>
+      <div id="hanzi-mybook" class="hidden"></div>
+      <div id="hanzi-quiz" class="hidden"></div>
+    </section>
+
+    <section id="view-math" class="view">
+      <div id="m-home" class="m-subview">
+        <div class="page-head"><div><p class="eyebrow">MATH PRACTICE</p><h1>数学</h1><p>拆解填空一步一步学凑十破十，口算心算自查，竖式跟着引导列。</p></div></div>
+        <h2 class="m-section">口算速练</h2>
+        <div id="m-modes" class="m-mode-grid"></div>
+        <h2 class="m-section">拆解填空<small>凑十法、破十法，一格一格填</small></h2>
+        <div id="d-modes" class="m-mode-grid"></div>
+        <h2 class="m-section">竖式闯关<small>跟着引导，一步一步列竖式</small></h2>
+        <div id="m-levels" class="m-level-grid"></div>
+      </div>
+
+      <div id="m-quiz" class="m-subview hidden">
+        <div class="study-head"><button id="m-back" class="text-button">‹ 数学</button><div class="m-meter"><span id="m-count"></span><span class="m-bar"><span id="m-fill"></span></span></div></div>
+        <article id="m-card" class="flashcard m-flash">
+          <div id="m-note" class="m-note hidden"></div>
+          <h2 id="m-eq" class="m-eq"></h2>
+          <div id="m-actions" class="study-actions"></div>
+        </article>
+      </div>
+
+      <div id="m-done" class="m-subview hidden"></div>
+
+      <div id="d-quiz" class="m-subview hidden">
+        <div class="study-head"><button id="d-back" class="text-button">‹ 数学</button><div class="m-meter"><span id="d-count"></span><span class="m-bar"><span id="d-fill"></span></span></div></div>
+        <div class="v-stage">
+          <div id="d-card" class="d-card">
+            <h2 id="d-eq" class="d-eq"></h2>
+            <div id="d-lines" class="d-lines"></div>
+            <div id="d-hint" class="v-hint"></div>
+          </div>
+          <div class="v-pad-wrap"><div id="d-keypad" class="v-keypad"></div><div class="v-pad-note">输完自动检查 · 点 ⌫ 可以重输</div></div>
+        </div>
+      </div>
+
+      <div id="d-done" class="m-subview hidden"></div>
+
+      <div id="v-quiz" class="m-subview hidden">
+        <div class="study-head"><button id="v-back" class="text-button">‹ 数学</button><div class="m-meter"><span id="v-count"></span><span class="m-bar"><span id="v-fill"></span></span></div></div>
+        <div class="v-stage">
+          <div id="v-card" class="v-card">
+            <div id="v-eq" class="v-eq"></div>
+            <div id="vsum" class="vsum"></div>
+            <div id="v-hint" class="v-hint"></div>
+          </div>
+          <div class="v-pad-wrap"><div id="v-keypad" class="v-keypad"></div><div class="v-pad-note">输完自动检查 · 点 ⌫ 可以重输</div></div>
+        </div>
+      </div>
+
+      <div id="v-done" class="m-subview hidden"></div>
+    </section>
+
+    <section id="view-data" class="view">
+      <div class="page-head"><div><p class="eyebrow">YOUR DATA</p><h1>数据与安装</h1><p>数据只保存在这台设备。请定期导出备份。</p></div></div>
+      <div class="data-grid">
+        <article class="data-card"><span>01</span><h2>导出备份</h2><p>用户、单词、释义和复习记录都会放进一个 .lexicon 文件。</p><button id="export-button" class="primary">导出全部数据</button></article>
+        <article class="data-card"><span>02</span><h2>导入备份</h2><p>同名用户和同名单词会自动合并，不会清空现有内容。</p><label class="secondary" for="import-input">选择文件并导入</label><input id="import-input" type="file" hidden></article>
+        <article class="data-card install"><span>03</span><h2>安装到 iPad</h2><p>在 Safari 中点“分享”，选择“添加到主屏幕”。安装后可断网使用，也不会每七天失效。</p><div id="install-state" class="status-dot">正在检查离线状态…</div></article>
+        <article class="data-card cloud"><span>04</span><h2>云同步</h2><p>数据存在云端，换设备打开也是同一份进度；没网时用本机缓存，联网后自动合并。口令全家用同一个。</p>
+          <div id="cloud-state" class="status-dot">未配置</div>
+          <div id="cloud-setup" class="cloud-setup hidden">
+            <input id="cloud-key-input" type="password" maxlength="64" placeholder="输入家庭口令" autocomplete="off">
+            <button id="cloud-connect" class="primary">连接云端</button>
+          </div>
+          <div id="cloud-actions" class="cloud-actions hidden">
+            <button id="cloud-sync-now" class="primary">立即同步</button>
+            <button id="cloud-disconnect" class="secondary">断开</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div id="d-config" class="overlay hidden">
+    <section class="sheet" role="dialog" aria-modal="true">
+      <button id="d-config-close" class="sheet-close">×</button>
+      <p class="eyebrow" id="d-config-eyebrow"></p>
+      <h2 id="d-config-title"></h2>
+      <p id="d-config-desc"></p>
+      <div id="d-config-body"></div>
+      <div class="d-config-start"><button id="d-config-start" class="primary"></button></div>
+    </section>
+  </div>
+
+  <div id="profile-overlay" class="overlay hidden">
+    <section class="sheet" role="dialog" aria-modal="true"><button id="close-profiles" class="sheet-close">×</button><p class="eyebrow">LEARNER</p><h2>谁在学习？</h2><p>每个孩子都有独立的生词和进度。</p><div id="profile-list" class="profile-list"></div><form id="profile-form"><input id="profile-input" maxlength="24" placeholder="新用户名字" required><button class="primary">新建用户</button></form></section>
+  </div>
+  <div id="char-overlay" class="overlay hidden">
+    <section class="sheet" role="dialog" aria-modal="true"><button class="sheet-close" onclick="document.getElementById('char-overlay').classList.add('hidden')" aria-label="关闭">×</button>
+      <p class="eyebrow">CHARACTER</p>
+      <div id="cd-char" class="cd-char"></div>
+      <div id="cd-pinyin" class="cd-pinyin"></div>
+      <div id="cd-sense" class="cd-sense"></div>
+      <div id="cd-phrases" class="hz-chip-row"></div>
+      <div id="cd-sentence" class="cd-sentence"></div>
+      <div class="hz-sheet-actions">
+        <button id="cd-speak" class="primary">🔊 读一读</button>
+        <button id="cd-strokes" class="secondary">✍️ 看笔顺</button>
+        <button id="cd-add" class="secondary">加入生字本</button>
+      </div>
+    </section>
+  </div>
+  <div id="stroke-overlay" class="overlay hidden">
+    <section class="sheet sw-sheet" role="dialog" aria-modal="true">
+      <button class="sheet-close" id="stroke-close" aria-label="关闭">×</button>
+      <p class="eyebrow">STROKE ORDER</p>
+      <h2 id="stroke-title">—</h2>
+      <div class="tianzige-wrap"><div class="tianzige"></div><div id="stroke-target"></div></div>
+      <div id="stroke-status" class="sw-status"></div>
+      <div class="sw-actions">
+        <button id="stroke-play" class="primary">▶ 看笔顺</button>
+        <button id="stroke-slow" class="secondary">🐢 慢速</button>
+        <button id="stroke-quiz" class="primary">✍️ 我来写</button>
+      </div>
+      <p class="sw-tip">点「我来写」后，按笔顺在格子里一笔一笔写，写错了会提示你。</p>
+    </section>
+  </div>
+  <div id="dictation-overlay" class="overlay hidden">
+    <section class="sheet dict-sheet" role="dialog" aria-modal="true">
+      <button class="sheet-close" id="dict-close" aria-label="关闭">×</button>
+      <div id="dict-select">
+        <p class="eyebrow">DICTATION</p>
+        <h2>✎ 听写测试</h2>
+        <p>默认听写全部词，也可以只勾选这次要测的几个。听发音、看释义，让孩子拼写出单词，成绩计入学习记录。</p>
+        <div class="dict-tools"><button class="secondary" id="dict-all">全选</button><button class="secondary" id="dict-none">全不选</button><b id="dict-count">已选 0 词</b></div>
+        <div id="dict-words" class="dict-words"></div>
+        <button class="primary" id="dict-start" style="width:100%">开始听写</button>
+      </div>
+      <div id="dict-run" class="hidden">
+        <p class="eyebrow" id="dict-progress">DICTATION</p>
+        <div class="dict-card">
+          <div class="dict-audio">
+            <button class="speaker" id="dict-speak" aria-label="再听一次">◖))</button>
+            <button class="secondary" id="dict-speak-zh">读释义</button>
+          </div>
+          <p id="dict-hint" class="dict-hint">—</p>
+          <input id="dict-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="听发音，拼写出单词">
+          <p id="dict-feedback" class="dict-feedback hidden"></p>
+          <div class="dict-actions">
+            <button class="primary" id="dict-submit">确认</button>
+            <button class="primary hidden" id="dict-next">下一个 →</button>
+            <button class="text-button" id="dict-stop">结束听写</button>
+          </div>
+        </div>
+      </div>
+      <div id="dict-summary" class="hidden">
+        <p class="eyebrow">RESULT</p>
+        <h2 id="dict-score">—</h2>
+        <p class="dict-note">成绩已计入学习记录（连对与复习权重会随之更新）。</p>
+        <div id="dict-wrong-list" class="dict-words"></div>
+        <div class="dict-actions">
+          <button class="primary" id="dict-redo-wrong">只听写错词</button>
+          <button class="secondary" id="dict-close-end">完成</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="core.js?20260921224028"></script>
+  <script src="cloud.js?20260921224028"></script>
+  <script src="charlists.js?20260921224028"></script>
+  <script src="wordbooks.js?20260921224028"></script>
+  <script src="app.js?20260921224028"></script>
+  <script src="math.js?20260921224028"></script>
+  <script src="vertical.js?20260921224028"></script>
+  <script src="decomp.js?20260921224028"></script>
+  <script src="hanziwriter.min.js?20260921224028"></script>
+  <script src="strokes.js?20260921224028"></script>
+</body>
+</html>
